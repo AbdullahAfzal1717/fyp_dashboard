@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 const Dashboard = () => {
   const [soldiers, setSoldiers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   const navigate = useNavigate();
 
@@ -23,6 +25,10 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     fetchData();
     const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
